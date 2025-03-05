@@ -1,0 +1,7 @@
+{
+ "default_tags": [{"name": "harvested"}],
+ "default_extras": {"harvest_url": "{harvest_source_url}/dataset/{dataset_id}"},
+ "read_only": true,
+ "remote_groups": "create",
+ "remote_orgs": "create"
+}

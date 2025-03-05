@@ -1,0 +1,43 @@
+/* =====================================================
+   The "account masthead" bar across the top of the site
+   ===================================================== */
+
+.account-masthead {
+    background-color: #96031A;
+}
+
+/* ========================================================================
+   The main masthead bar that contains the site logo, nav links, and search
+   ======================================================================== */
+
+.masthead {
+  background-color: #bc0421;
+}
+
+/* ===========================================
+   The content in the middle of the front page
+   =========================================== */
+
+.media-overlay .media-heading {
+  background-color: #96031A;
+}
+
+.homepage .module-search .tags {
+  background-color: #bc0421;
+}
+
+.homepage .module-search .tags {
+  background-color: #96031A;
+}
+
+.homepage .module-search .search-form {
+  background-color: #bc0421;
+}
+
+/* ====================================
+   The footer at the bottom of the site
+   ==================================== */
+
+.site-footer {
+  background: #bc0421 url("../../../base/images/bg.png");
+}
