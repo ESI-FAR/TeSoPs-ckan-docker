@@ -1,35 +1,35 @@
 volumes:
-  ckan_storage:
-  pg_data:
-  solr_data:
-  pip_cache:
-  site_packages:
-  local_bin:
-  home_dir:
+  ckan_storage_fed:
+  pg_data_fed:
+  solr_data_fed:
+  pip_cache_fed:
+  site_packages_fed:
+  local_bin_fed:
+  home_dir_fed:
 
 services:
 
-  ckan-dev:
+  ckan-dev_fed:
     build:
       context: ckan/
       dockerfile: Dockerfile.dev
       args:
         - TZ=${TZ}
     env_file:
-      - .env.dev
+      - .env.federation.main
     links:
-      - db
-      - solr
-      - redis
+      - db_fed
+      - solr_fed
+      - redis_fed
     ports:
-      - "0.0.0.0:${CKAN_PORT_HOST}:5000"
+      - "0.0.0.0:5001:5000"
     volumes:
-      - ckan_storage:/var/lib/ckan
-      - ./src:/srv/app/src_extensions
-      - pip_cache:/root/.cache/pip
-      - site_packages:/usr/local/lib/python3.10/site-packages
-      - local_bin:/usr/local/bin
-      - home_dir:/srv/app/
+      - ckan_storage_fed:/var/lib/ckan
+      - ./src_fed:/srv/app/src_extensions
+      - pip_cache_fed:/root/.cache/pip
+      - site_packages_fed:/usr/local/lib/python3.10/site-packages
+      - local_bin_fed:/usr/local/bin
+      - home_dir_fed:/srv/app/
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:5000"]
@@ -37,7 +37,7 @@ services:
       timeout: 10s
       retries: 3
 
-  datapusher:
+  datapusher_fed:
     image: ckan/ckan-base-datapusher:${DATAPUSHER_VERSION}
     restart: unless-stopped
     healthcheck:
@@ -46,7 +46,7 @@ services:
       timeout: 10s
       retries: 3
 
-  db:
+  db_fed:
     build:
       context: postgresql/
     environment:
@@ -60,20 +60,20 @@ services:
       - DATASTORE_READONLY_PASSWORD
       - DATASTORE_DB
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - pg_data_fed:/var/lib/postgresql/data
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
 
-  solr:
+  solr_fed:
     image: ckan/ckan-solr:${SOLR_IMAGE_VERSION}
     volumes:
-      - solr_data:/var/solr
+      - solr_data_fed:/var/solr
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:8983/solr/"]
 
-  redis:
+  redis_fed:
     image: redis:${REDIS_VERSION}
     restart: unless-stopped
     healthcheck:

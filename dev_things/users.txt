@@ -1,0 +1,15 @@
+# admin #
+ckan_admin
+FIXME_7e55mvycN4rHnvDZj5T5bt4FVev9vNpWEY57bVKKrWE2
+
+# user_1 #
+user_1@example.com
+FIXME_7ifIcPSMtmFeWB
+
+# user_2 #
+user_2@example.com
+FIXME_7yUw0dDXqewfbu
+
+# user_3 #
+user_3@example.com
+FIXME_7bStbyxGHQieVE

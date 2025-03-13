@@ -17,8 +17,8 @@ FROM ckan/ckan-dev:2.11
 #    pip3 install -U requests[security]
 
 ### Harvester ###
-#RUN pip3 install -e 'git+https://github.com/ckan/ckanext-harvest.git@master#egg=ckanext-harvest' && \
-#    pip3 install -r ${APP_DIR}/src/ckanext-harvest/pip-requirements.txt
+RUN pip3 install -e 'git+https://github.com/ckan/ckanext-harvest.git@master#egg=ckanext-harvest' && \
+    pip3 install -r ${APP_DIR}/src/ckanext-harvest/pip-requirements.txt
 # will also require gather_consumer and fetch_consumer processes running (please see https://github.com/ckan/ckanext-harvest)
 
 ### Scheming ###
@@ -41,6 +41,21 @@ COPY --chown=ckan-sys:ckan-sys docker-entrypoint.d/* /docker-entrypoint.d/
 # runtime mounted ones)
 COPY --chown=ckan-sys:ckan-sys patches ${APP_DIR}/patches
 
+### Install supervisor
+USER root
+
+
+RUN apt-get update
+RUN apt-get install -y supervisor
+RUN apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /etc/supervisor
+# FIXME config file is globally readable
+# both "root" and "ckan" user need to read it
+# how to make this more secure?
+COPY --chmod=444 supervisor/supervisord.conf /etc/supervisor/supervisord.conf
+
 USER ckan
 
 RUN for d in $APP_DIR/patches/*; do \
@@ -50,3 +65,7 @@ RUN for d in $APP_DIR/patches/*; do \
             done ; \
         fi ; \
     done
+
+
+USER root
+CMD ["/usr/sbin/service", "supervisor", "start"]
