@@ -35,28 +35,27 @@ RUN pip3 install -e 'git+https://github.com/ckan/ckanext-harvest.git@master#egg=
 # to get them mounted in this image at runtime
 
 # Copy custom initialization scripts
-COPY --chown=ckan-sys:ckan-sys docker-entrypoint.d/* /docker-entrypoint.d/
+COPY --chown=ckan:ckan-sys docker-entrypoint.d/* /docker-entrypoint.d/
 
 # Apply any patches needed to CKAN core or any of the built extensions (not the
 # runtime mounted ones)
-COPY --chown=ckan-sys:ckan-sys patches ${APP_DIR}/patches
+COPY --chown=ckan:ckan-sys patches ${APP_DIR}/patches
 
 ### Install supervisor
 USER root
-
 
 RUN apt-get update
 RUN apt-get install -y supervisor
 RUN apt-get clean && \
   rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /etc/supervisor
-# FIXME config file is globally readable
-# both "root" and "ckan" user need to read it
-# how to make this more secure?
-COPY --chmod=444 supervisor/supervisord.conf /etc/supervisor/supervisord.conf
+RUN mkdir /home/ckan
+RUN chown -R ckan:ckan-sys /home/ckan
 
 USER ckan
+
+RUN mkdir -p /home/ckan/var/log/supervisor /home/ckan/var/run /home/ckan/supervisor
+COPY --chown=ckan:ckan-sys supervisor/supervisord.conf /home/ckan/supervisor/supervisord.conf
 
 RUN for d in $APP_DIR/patches/*; do \
         if [ -d $d ]; then \
@@ -66,6 +65,4 @@ RUN for d in $APP_DIR/patches/*; do \
         fi ; \
     done
 
-
-USER root
-CMD ["/usr/sbin/service", "supervisor", "start"]
+CMD ["/usr/bin/supervisord", "--configuration", "/home/ckan/supervisor/supervisord.conf"]

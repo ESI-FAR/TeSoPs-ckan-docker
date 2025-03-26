@@ -3,7 +3,7 @@
 # Pass on all `.env` environment variables to supervisor conf file.
 # supervisor ignores all user env vars, so we have to supply them by hand.
 
-ENV_FILE=".env"
+ENV_FILE=".env.dev"
 TEMPLATE_FILE="ckan/supervisor/supervisord_template.conf"
 CONF_FILE="ckan/supervisor/supervisord.conf"
 

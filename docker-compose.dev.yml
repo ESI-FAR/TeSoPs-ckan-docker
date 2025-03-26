@@ -15,8 +15,9 @@ services:
       dockerfile: Dockerfile.dev
       args:
         - TZ=${TZ}
-    env_file:
-      - .env.dev
+    # env_file:
+    #   - path: ./.env.dev
+    #     required: true
     links:
       - db
       - solr
@@ -39,6 +40,9 @@ services:
 
   datapusher:
     image: ckan/ckan-base-datapusher:${DATAPUSHER_VERSION}
+    # env_file:
+    #   - path: ./.env.dev
+    #     required: true
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:8800"]
@@ -49,6 +53,9 @@ services:
   db:
     build:
       context: postgresql/
+    # env_file:
+    #   - path: ./.env.dev
+    #     required: true
     environment:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
@@ -67,6 +74,9 @@ services:
 
   solr:
     image: ckan/ckan-solr:${SOLR_IMAGE_VERSION}
+    # env_file:
+    #   - path: ./.env.dev
+    #     required: true
     volumes:
       - solr_data:/var/solr
     restart: unless-stopped
@@ -75,6 +85,9 @@ services:
 
   redis:
     image: redis:${REDIS_VERSION}
+    # env_file:
+    #   - path: ./.env.dev
+    #     required: true
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "-e", "QUIT"]
