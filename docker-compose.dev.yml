@@ -15,15 +15,15 @@ services:
       dockerfile: Dockerfile.dev
       args:
         - TZ=${TZ}
-    # env_file:
-    #   - path: ./.env.dev
-    #     required: true
+    env_file:
+      - ./.env.dev
     links:
       - db
       - solr
       - redis
     ports:
-      - "0.0.0.0:${CKAN_PORT_HOST}:5000"
+      - "0.0.0.0:5000:5000"  # hardcoded as it needs to be pulled from environment, and NOT from env files.
+      # - "0.0.0.0:${CKAN_PORT_HOST:-5000}:5000" # extended feaures (default value) is not supported. Not documented on official docs, only stackoverflow.
     volumes:
       - ckan_storage:/var/lib/ckan
       - ./src:/srv/app/src_extensions
@@ -40,9 +40,8 @@ services:
 
   datapusher:
     image: ckan/ckan-base-datapusher:${DATAPUSHER_VERSION}
-    # env_file:
-    #   - path: ./.env.dev
-    #     required: true
+    env_file:
+      - ./.env.dev
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:8800"]
@@ -53,19 +52,8 @@ services:
   db:
     build:
       context: postgresql/
-    # env_file:
-    #   - path: ./.env.dev
-    #     required: true
-    environment:
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD
-      - POSTGRES_DB
-      - CKAN_DB_USER
-      - CKAN_DB_PASSWORD
-      - CKAN_DB
-      - DATASTORE_READONLY_USER
-      - DATASTORE_READONLY_PASSWORD
-      - DATASTORE_DB
+    env_file:
+      - ./.env.dev
     volumes:
       - pg_data:/var/lib/postgresql/data
     restart: unless-stopped
@@ -74,9 +62,8 @@ services:
 
   solr:
     image: ckan/ckan-solr:${SOLR_IMAGE_VERSION}
-    # env_file:
-    #   - path: ./.env.dev
-    #     required: true
+    env_file:
+      - ./.env.dev
     volumes:
       - solr_data:/var/solr
     restart: unless-stopped
@@ -85,9 +72,8 @@ services:
 
   redis:
     image: redis:${REDIS_VERSION}
-    # env_file:
-    #   - path: ./.env.dev
-    #     required: true
+    env_file:
+      - ./.env.dev
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "-e", "QUIT"]
