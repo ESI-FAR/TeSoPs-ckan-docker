@@ -25,7 +25,7 @@ services:
       - redis
     ports:
       - "0.0.0.0:5000:5000"  # hardcoded as it needs to be pulled from environment, and NOT from env files.
-      # - "0.0.0.0:${CKAN_PORT_HOST:-5000}:5000" # extended feaures (default value) is not supported. Not documented on official docs, only stackoverflow.
+      # - "0.0.0.0:${CKAN_PORT_HOST:-5000}:5000" # extended features (default value) is not supported. Not documented on official docs, only stackoverflow.
     volumes:
       - ckan_storage:/var/lib/ckan
       - ./src:/srv/app/src_extensions
