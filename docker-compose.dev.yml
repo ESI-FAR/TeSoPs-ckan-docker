@@ -17,7 +17,6 @@ services:
         - TZ=${TZ}
     env_file:
       - path: .env.dev
-      - path: .env.postgres
       - path: .env.secrets
     links:
       - db
@@ -44,7 +43,6 @@ services:
     image: ckan/ckan-base-datapusher:${DATAPUSHER_VERSION}
     env_file:
       - path: .env.dev
-      - path: .env.postgres
       - path: .env.secrets
     restart: unless-stopped
     healthcheck:
@@ -59,7 +57,6 @@ services:
     env_file:
       - path: .env.dev
       - path: .env.secrets
-      - path: .env.postgres
     volumes:
       - pg_data:/var/lib/postgresql/data
     restart: unless-stopped
