@@ -55,7 +55,6 @@ RUN chown -R ckan:ckan-sys /home/ckan
 USER ckan
 
 RUN mkdir -p /home/ckan/var/log/supervisor /home/ckan/var/run /home/ckan/supervisor
-COPY --chown=ckan:ckan-sys supervisor/supervisord.conf /home/ckan/supervisor/supervisord.conf
 
 RUN for d in $APP_DIR/patches/*; do \
         if [ -d $d ]; then \
@@ -65,4 +64,4 @@ RUN for d in $APP_DIR/patches/*; do \
         fi ; \
     done
 
-CMD ["/usr/bin/supervisord", "--configuration", "/home/ckan/supervisor/supervisord.conf"]
+CMD ["/usr/bin/supervisord", "--configuration", "/run/secrets/supervisord_file"]
